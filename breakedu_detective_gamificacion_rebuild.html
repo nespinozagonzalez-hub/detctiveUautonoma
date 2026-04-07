@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Archivo Clue Académico — Caso 001</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#081018;
+  --bg2:#0f1c28;
+  --panel:#102130;
+  --panel2:#152a3d;
+  --line:#284257;
+  --glow:#b38a44;
+  --glow2:#d8c18a;
+  --accent:#77d4ff;
+  --accent2:#a4ffbf;
+  --danger:#ff8181;
+  --text:#eef5fb;
+  --muted:#97adc0;
+  --shadow:0 18px 50px rgba(0,0,0,.35);
+  --radius:24px;
+  --font-display:'Exo 2',sans-serif;
+  --font-body:'Rajdhani',sans-serif;
+  --font-mono:'Share Tech Mono',monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:radial-gradient(circle at top,#132639 0%,var(--bg) 50%,#04090f 100%);color:var(--text);font-family:var(--font-body);min-height:100%}
+body{overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:
+  linear-gradient(180deg,rgba(255,255,255,.035),transparent 30%),
+  repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,.015) 3px,rgba(255,255,255,.015) 4px);
+opacity:.35;z-index:0}
+.screen{display:none;min-height:100svh;position:relative;z-index:1}
+.screen.active{display:flex}
+.center-wrap{width:min(1200px,94vw);margin:auto}
+.hero{flex-direction:column;align-items:center;justify-content:center;padding:48px 0;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:
+ radial-gradient(circle at 15% 20%,rgba(119,212,255,.08),transparent 22%),
+ radial-gradient(circle at 80% 75%,rgba(211,173,103,.08),transparent 22%),
+ linear-gradient(135deg,rgba(255,255,255,.02),transparent 40%);
+pointer-events:none}
+.hero-card{position:relative;width:min(1100px,92vw);padding:42px;border:1px solid rgba(255,255,255,.08);border-radius:32px;background:linear-gradient(180deg,rgba(16,33,48,.88),rgba(10,20,31,.92));box-shadow:var(--shadow);text-align:center;backdrop-filter: blur(10px)}
+.kicker{font-family:var(--font-mono);letter-spacing:4px;text-transform:uppercase;color:var(--glow2);font-size:12px;margin-bottom:16px}
+.title{font-family:var(--font-display);font-weight:900;line-height:.95;margin:0 0 10px;font-size:clamp(40px,7vw,88px);text-transform:uppercase}
+.title span{display:block;color:var(--glow);text-shadow:0 0 24px rgba(179,138,68,.25)}
+.subtitle{max-width:760px;margin:0 auto 28px;color:#dce7f1;font-size:clamp(18px,2.4vw,26px);line-height:1.35}
+.copy{max-width:760px;margin:0 auto 32px;color:var(--muted);font-size:20px;line-height:1.45}
+.actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{appearance:none;border:none;border-radius:999px;padding:14px 22px;font:700 18px var(--font-body);cursor:pointer;transition:.22s ease;letter-spacing:.3px}
+.btn.primary{background:linear-gradient(135deg,var(--glow),#8e6d38);color:#1b1307;box-shadow:0 10px 24px rgba(179,138,68,.25)}
+.btn.secondary{background:rgba(255,255,255,.06);color:var(--text);border:1px solid rgba(255,255,255,.12)}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.14);color:var(--muted)}
+.btn:hover{transform:translateY(-2px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.load-shell{flex-direction:column;align-items:center;justify-content:center;padding:48px 0}
+.load-card{width:min(780px,92vw);padding:38px;border-radius:30px;background:linear-gradient(180deg,rgba(19,34,50,.95),rgba(12,20,31,.95));border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow)}
+.load-text{font-size:30px;font-weight:700;margin:0 0 24px;text-align:center}
+.progress{height:18px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--glow),var(--accent2));transition:width .35s ease}
+.load-list{margin:20px 0 0;padding:0;list-style:none;display:grid;gap:10px;color:var(--muted);font-size:18px}
+.load-list li.done{color:var(--accent2)}
+.builder{padding:32px 0;align-items:center;justify-content:center}
+.panel{width:min(1120px,94vw);background:linear-gradient(180deg,rgba(16,33,48,.96),rgba(10,20,31,.96));border:1px solid rgba(255,255,255,.08);border-radius:28px;box-shadow:var(--shadow);overflow:hidden}
+.panel-head{padding:26px 28px 10px;border-bottom:1px solid rgba(255,255,255,.08)}
+.panel-title{margin:0;font:800 clamp(28px,4vw,44px) var(--font-display);text-transform:uppercase}
+.panel-sub{margin:8px 0 0;color:var(--muted);font-size:20px}
+.panel-body{padding:28px;display:grid;gap:28px}
+.grid-2{display:grid;grid-template-columns:1.15fr .85fr;gap:24px}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:22px}
+.label{font-family:var(--font-mono);font-size:12px;letter-spacing:3px;color:var(--glow2);text-transform:uppercase;margin-bottom:12px}
+.input{width:100%;padding:16px 18px;border-radius:18px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:var(--text);font:600 20px var(--font-body);outline:none}
+.input:focus{border-color:rgba(119,212,255,.55);box-shadow:0 0 0 4px rgba(119,212,255,.08)}
+.option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.option{border:1px solid rgba(255,255,255,.09);border-radius:22px;padding:18px;background:rgba(255,255,255,.035);cursor:pointer;transition:.2s ease}
+.option:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.18)}
+.option.selected{border-color:rgba(179,138,68,.8);background:rgba(179,138,68,.12);box-shadow:inset 0 0 0 1px rgba(179,138,68,.35)}
+.option h4{margin:0 0 6px;font-size:24px}
+.option p{margin:0;color:var(--muted);font-size:18px;line-height:1.3}
+.footer-actions{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.app{padding:18px 0}
+.shell{width:min(1360px,96vw);margin:auto;display:grid;grid-template-columns:330px 1fr;gap:18px;align-items:start}
+.sidebar,.main{background:linear-gradient(180deg,rgba(17,34,49,.97),rgba(11,21,32,.97));border:1px solid rgba(255,255,255,.08);border-radius:26px;box-shadow:var(--shadow)}
+.sidebar{padding:20px;position:sticky;top:14px}
+.main{overflow:hidden}
+.brand{font-family:var(--font-display);font-size:28px;font-weight:800;text-transform:uppercase;line-height:1}
+.brand small{display:block;font-size:12px;letter-spacing:3px;color:var(--glow2);font-family:var(--font-mono);margin-bottom:10px}
+.agent-box,.lock-list,.sus-mini{margin-top:18px}
+.agent-box .mini{color:var(--muted);font-size:18px;line-height:1.4}
+.agent-tag{display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(119,212,255,.12);border:1px solid rgba(119,212,255,.22);font-size:16px;margin-top:10px}
+.lock{padding:14px;border-radius:18px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.lock .state{font-size:14px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--muted)}
+.lock.done .state{background:rgba(164,255,191,.13);color:var(--accent2)}
+.lock.current{outline:1px solid rgba(179,138,68,.45);background:rgba(179,138,68,.07)}
+.sus-mini button{width:100%;margin-top:8px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.08)}
+.topbar h2{margin:0;font:800 clamp(24px,4vw,38px) var(--font-display);text-transform:uppercase}
+.topbar p{margin:4px 0 0;color:var(--muted);font-size:18px}
+.workspace{padding:22px;display:grid;gap:18px}
+.story{font-size:22px;line-height:1.42;color:#f0f6fa}
+.story strong{color:var(--glow2)}
+.story-card{padding:20px 22px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.08)}
+.question{font-size:24px;font-weight:700;margin:0 0 14px}
+.answers{display:grid;gap:12px}
+.answer{padding:16px 18px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);cursor:pointer;font-size:20px;transition:.18s ease;color:var(--text);text-align:left}
+.answer:hover{border-color:rgba(255,255,255,.18)}
+.answer.correct{border-color:rgba(164,255,191,.65);background:rgba(164,255,191,.12)}
+.answer.wrong{border-color:rgba(255,129,129,.5);background:rgba(255,129,129,.12)}
+.feedback{display:none;padding:18px;border-radius:18px;font-size:20px;line-height:1.35;border:1px solid rgba(255,255,255,.08)}
+.feedback.show{display:block}
+.feedback.ok{background:rgba(164,255,191,.12);border-color:rgba(164,255,191,.28)}
+.feedback.bad{background:rgba(255,129,129,.12);border-color:rgba(255,129,129,.25)}
+.code-chip{display:inline-flex;align-items:center;justify-content:center;min-width:56px;height:56px;border-radius:18px;background:rgba(179,138,68,.15);border:1px solid rgba(179,138,68,.32);font:800 28px var(--font-display);color:var(--glow2);margin-right:8px}
+.inline-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);font-size:16px;color:var(--muted);border:1px solid rgba(255,255,255,.08)}
+.modal{position:fixed;inset:0;background:rgba(1,5,10,.78);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+.modal.show{display:flex}
+.modal-card{width:min(1120px,96vw);max-height:90svh;overflow:auto;background:linear-gradient(180deg,rgba(18,33,48,.98),rgba(10,20,31,.98));border:1px solid rgba(255,255,255,.09);border-radius:28px;box-shadow:var(--shadow)}
+.modal-head{position:sticky;top:0;background:linear-gradient(180deg,rgba(18,33,48,.98),rgba(18,33,48,.92));padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:2}
+.modal-head h3{margin:0;font:800 clamp(24px,3.4vw,36px) var(--font-display);text-transform:uppercase}
+.modal-body{padding:24px}
+.sus-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.suspect{border:1px solid rgba(255,255,255,.08);border-radius:24px;overflow:hidden;background:rgba(255,255,255,.035);position:relative}
+.sus-top{padding:18px;background:linear-gradient(135deg,rgba(179,138,68,.18),rgba(119,212,255,.07));border-bottom:1px solid rgba(255,255,255,.08)}
+.sus-name{margin:0;font:800 26px var(--font-display);text-transform:uppercase}
+.sus-role{margin-top:4px;color:var(--muted);font-size:18px}
+.sus-body{padding:18px;display:grid;gap:12px}
+.sus-body p{margin:0;color:#e7eff6;font-size:19px;line-height:1.35}
+.suspect.discarded{opacity:.48;filter:grayscale(.3)}
+.stamp{position:absolute;right:14px;top:14px;transform:rotate(-12deg);padding:8px 16px;border:2px solid rgba(255,129,129,.95);color:var(--danger);font:700 20px var(--font-display);border-radius:10px;display:none;background:rgba(30,0,0,.16)}
+.suspect.discarded .stamp{display:block}
+.accuse{padding:20px;border-radius:22px;background:linear-gradient(180deg,rgba(179,138,68,.12),rgba(255,255,255,.03));border:1px solid rgba(179,138,68,.3)}
+.accuse h3{margin:0 0 8px;font:800 28px var(--font-display);text-transform:uppercase}
+.accuse p{margin:0 0 16px;color:var(--muted);font-size:20px;line-height:1.35}
+.accuse-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.accuse-btn{padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.045);color:var(--text);font:700 18px var(--font-body);cursor:pointer;text-align:left}
+.accuse-btn:hover{border-color:rgba(255,255,255,.18)}
+.result{display:none;padding:18px;border-radius:18px;border:1px solid rgba(255,255,255,.08);font-size:20px;line-height:1.4}
+.result.show{display:block}
+.result.good{background:rgba(164,255,191,.12);border-color:rgba(164,255,191,.25)}
+.result.bad{background:rgba(255,129,129,.12);border-color:rgba(255,129,129,.25)}
+.final-card{padding:22px;border-radius:24px;background:linear-gradient(180deg,rgba(179,138,68,.1),rgba(255,255,255,.03));border:1px solid rgba(179,138,68,.28)}
+.final-card h3{margin:0 0 12px;font:800 32px var(--font-display);text-transform:uppercase}
+.final-card p{margin:0;color:#eef5fb;font-size:22px;line-height:1.4}
+.hidden{display:none!important}
+@media (max-width:1080px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:relative;top:auto}
+  .grid-2{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .hero-card,.load-card,.panel{width:min(96vw,96vw);padding:22px}
+  .panel-head,.panel-body,.workspace,.sidebar,.topbar{padding:18px}
+  .option-grid,.sus-grid,.accuse-grid{grid-template-columns:1fr}
+  .title{font-size:clamp(34px,13vw,60px)}
+  .story,.question{font-size:20px}
+  .answer,.panel-sub,.copy,.subtitle,.sus-body p,.accuse p{font-size:18px}
+}
+</style>
+</head>
+<body>
+  <section id="screen-intro" class="screen active hero">
+    <div class="hero-card">
+      <div class="kicker">Archivo clue académico · expediente confidencial</div>
+      <h1 class="title">Caso 001 <span>El sabotaje de la experiencia gamificada</span></h1>
+      <p class="subtitle">Una clase universitaria recibió puntos, niveles e insignias… y aun así fracasó. Tu misión es reunir pistas, descartar sospechosos y emitir la acusación final.</p>
+      <p class="copy">La base del caso es clara: no basta con poner elementos de juego. Habrá que leer, interpretar evidencias pedagógicas y resolver cada candado con precisión detective.</p>
+      <div class="actions">
+        <button class="btn primary" onclick="startLoading()">Abrir expediente</button>
+        <button class="btn secondary" onclick="toggleAudio()" id="audioBtn">Activar ambiente</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-loading" class="screen load-shell">
+    <div class="load-card">
+      <p class="load-text">Preparando sala de investigación...</p>
+      <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+      <ul id="loadList" class="load-list">
+        <li>Verificando credenciales del detective...</li>
+        <li>Recuperando expediente de sospechosos...</li>
+        <li>Clasificando evidencias de gamificación...</li>
+        <li>Desbloqueando tablero de descarte...</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="screen-builder" class="screen builder">
+    <div class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">Forja de detective</h2>
+        <p class="panel-sub">Elige tu identidad y tu enfoque de investigación antes de entrar al caso.</p>
+      </div>
+      <div class="panel-body">
+        <div class="grid-2">
+          <div class="card">
+            <div class="label">Identidad</div>
+            <input id="playerName" class="input" type="text" placeholder="Escribe tu alias detective" maxlength="24" oninput="checkReady()" />
+            <div style="height:18px"></div>
+            <div class="label">Perfil</div>
+            <div class="option-grid" id="profileOptions">
+              <div class="option" data-profile="Analítico" onclick="selectProfile(this)"><h4>Analítico</h4><p>Lee patrones, ordena evidencia y descarta con lógica fría.</p></div>
+              <div class="option" data-profile="Creativo" onclick="selectProfile(this)"><h4>Creativo</h4><p>Encuentra conexiones invisibles y detecta pistas ocultas.</p></div>
+              <div class="option" data-profile="Estratégico" onclick="selectProfile(this)"><h4>Estratégico</h4><p>Piensa en el diseño global y en cómo encajan las decisiones.</p></div>
+              <div class="option" data-profile="Observador" onclick="selectProfile(this)"><h4>Observador</h4><p>No se le escapa ningún detalle, ni siquiera en la escena más caótica.</p></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="label">Equipamiento</div>
+            <div class="option-grid" id="gearOptions">
+              <div class="option" data-gear="Lupa analítica" onclick="selectGear(this)"><h4>Lupa analítica</h4><p>Ideal para leer las evidencias pedagógicas con precisión.</p></div>
+              <div class="option" data-gear="Libreta de hipótesis" onclick="selectGear(this)"><h4>Libreta de hipótesis</h4><p>Perfecta para anotar contradicciones y construir teorías.</p></div>
+              <div class="option" data-gear="Linterna de evidencias" onclick="selectGear(this)"><h4>Linterna de evidencias</h4><p>Revela aquello que a simple vista parecía decorativo.</p></div>
+              <div class="option" data-gear="Kit de descifrado" onclick="selectGear(this)"><h4>Kit de descifrado</h4><p>Excelente para claves, textos ocultos y pistas codificadas.</p></div>
+            </div>
+            <div style="height:18px"></div>
+            <div class="card" style="padding:16px;background:rgba(255,255,255,.03)">
+              <div class="label">Briefing</div>
+              <p class="panel-sub" style="margin:0">Resolverás 4 candados. Cada uno entregará una pista para eliminar sospechosos. Al final, una sola acusación cerrará el caso.</p>
+            </div>
+          </div>
+        </div>
+        <div class="footer-actions">
+          <button class="btn ghost" onclick="showScreen('screen-intro')">Volver</button>
+          <button id="startCaseBtn" class="btn primary" disabled onclick="enterCase()">Entrar al tablero del caso</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-case" class="screen app">
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand"><small>archivo central</small>Caso 001</div>
+        <div class="agent-box card">
+          <div class="label">Detective asignado</div>
+          <div id="agentName" style="font:800 30px var(--font-display);text-transform:uppercase">—</div>
+          <div class="mini" id="agentProfile">—</div>
+          <div class="agent-tag" id="agentGear">—</div>
+        </div>
+        <div class="lock-list card">
+          <div class="label">Candados del caso</div>
+          <div id="locksWrap"></div>
+        </div>
+        <div class="sus-mini card">
+          <div class="label">Archivo de sospechosos</div>
+          <p class="mini">Abre el fichero aparte, usa las pistas y marca quién ya no puede ser el culpable.</p>
+          <button class="btn secondary" onclick="openSuspects()">Abrir archivo</button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="topbar">
+          <div>
+            <h2 id="missionTitle">Candado 1 · Escena inicial</h2>
+            <p id="missionSub">Lee la evidencia, responde y obtén la primera pista.</p>
+          </div>
+          <div class="inline-actions">
+            <span class="pill">Pistas reunidas: <strong id="pistasCount">0</strong></span>
+            <span class="pill">Código: <strong id="codeDisplay">_ _ _ _</strong></span>
+          </div>
+        </div>
+
+        <div class="workspace">
+          <div class="story-card">
+            <div class="label">Evidencia pedagógica</div>
+            <div id="storyText" class="story"></div>
+          </div>
+
+          <div class="card">
+            <div class="label">Interrogante del caso</div>
+            <p id="questionText" class="question"></p>
+            <div id="answersWrap" class="answers"></div>
+          </div>
+
+          <div id="feedbackBox" class="feedback"></div>
+
+          <div class="footer-actions">
+            <button class="btn secondary" onclick="openSuspects()">Ver sospechosos</button>
+            <button id="continueBtn" class="btn primary hidden" onclick="goNextMission()">Continuar</button>
+          </div>
+
+          <div id="accuseBlock" class="accuse hidden">
+            <h3>Acusación final</h3>
+            <p>Has abierto todos los candados. Revisa las pistas, mira el archivo de sospechosos y emite tu acusación final.</p>
+            <div class="accuse-grid" id="accuseGrid"></div>
+            <div id="finalResult" class="result"></div>
+          </div>
+
+          <div id="victoryBlock" class="final-card hidden">
+            <h3>Caso resuelto</h3>
+            <p id="victoryText"></p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <div id="suspectsModal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Archivo de sospechosos</h3>
+        <button class="btn ghost" onclick="closeSuspects()">Cerrar</button>
+      </div>
+      <div class="modal-body">
+        <div id="susGrid" class="sus-grid"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const state = {
+  playerName:'', profile:'', gear:'',
+  missionIndex:0, solved:[false,false,false,false],
+  suspectStatus:{puntos:false,narrativa:false,tecnologia:false,feedback:false,meta:false},
+  code:['_','_','_','_'], audio:false
+};
+
+const suspects = [
+  {id:'puntos', name:'Señor Puntos Vacíos', role:'Premia sin propósito', desc:'Llena la experiencia de puntos, insignias y niveles, pero no conecta nada con el aprendizaje real.'},
+  {id:'narrativa', name:'Dama Narrativa Hueca', role:'Historia sin amarre pedagógico', desc:'Crea una ambientación atractiva, pero sin vínculo con objetivos, decisiones ni comprensión.'},
+  {id:'tecnologia', name:'Inspector Tecnología Caótica', role:'Herramientas sin criterio', desc:'Agrega plataformas y recursos digitales que distraen, confunden o entorpecen la experiencia.'},
+  {id:'feedback', name:'Barón Feedback Ausente', role:'Silencio tras el desafío', desc:'Deja que el estudiante avance sin orientación clara sobre lo que hace bien o debe mejorar.'},
+  {id:'meta', name:'Condesa Meta Borrosa', role:'Objetivo sin nitidez', desc:'Propone una actividad donde nadie entiende con claridad qué debe aprender o lograr.'}
+];
+
+const missions = [
+  {
+    title:'Candado 1 · Escena inicial',
+    sub:'Primera lectura del expediente y hallazgo de la evidencia central.',
+    story:'En el aula investigada se halló un sistema completo de <strong>puntos</strong>, <strong>niveles</strong> e <strong>insignias</strong>. La interfaz era vistosa y el ranking se actualizaba cada semana. Sin embargo, al entrevistar a los estudiantes, la mayoría declaró que <strong>no entendía qué estaba aprendiendo</strong> ni para qué servían realmente las recompensas.',
+    q:'¿Qué problema revela con mayor claridad esta evidencia?',
+    options:[
+      'La experiencia tiene demasiada narrativa y poca tecnología.',
+      'Se usaron elementos de juego sin sentido pedagógico claro.',
+      'El único problema es que faltó trabajo en equipo.',
+      'La actividad falló porque no había música ambiental.'
+    ],
+    correct:1,
+    code:'M',
+    hint:'Pista 1: el culpable principal parece obsesionado con las recompensas visibles. La evidencia no apunta a un problema de plataformas ni de colaboración.'
+  },
+  {
+    title:'Candado 2 · El objetivo perdido',
+    sub:'Segunda evidencia: los estudiantes sí avanzaban, pero nadie sabía hacia dónde.',
+    story:'Los documentos del curso muestran una actividad con rutas, monedas y eventos especiales. Todo parecía bien diseñado a primera vista. Pero en la pauta no se especificaba <strong>qué aprendizaje se esperaba lograr</strong>, ni cómo cada desafío aportaba al objetivo central de la clase.',
+    q:'¿Qué concepto se vuelve más importante para interpretar esta falla?',
+    options:[
+      'Retroalimentación',
+      'Estética visual',
+      'Objetivo de aprendizaje',
+      'Velocidad del juego'
+    ],
+    correct:2,
+    code:'E',
+    hint:'Pista 2: ya puedes descartar a quien solo trabaja con tecnología y también a quien solo crea historias vistosas. Aquí el error central está en el propósito.'
+  },
+  {
+    title:'Candado 3 · Silencio tras el desafío',
+    sub:'Tercera evidencia: el estudiante juega, pero no sabe cómo mejorar.',
+    story:'En la tercera revisión del caso se detectó que los participantes resolvían retos y sumaban logros, pero al terminar no recibían ninguna orientación específica. No sabían <strong>por qué acertaban</strong>, qué aspecto mejorar ni cómo avanzar con más comprensión. La actividad seguía, pero el aprendizaje no se refinaba.',
+    q:'¿Qué elemento de gamificación está claramente debilitado en esta escena?',
+    options:[
+      'Feedback formativo',
+      'Decoración del entorno',
+      'Uso de colores',
+      'Cantidad de personajes'
+    ],
+    correct:0,
+    code:'T',
+    hint:'Pista 3: la ausencia de orientación fue grave, pero esta evidencia muestra más bien un problema secundario dentro del caso. El culpable final sigue apuntando hacia quien reemplaza el sentido por premios.'
+  },
+  {
+    title:'Candado 4 · Reconstrucción del caso',
+    sub:'Último cruce de evidencias antes de la acusación definitiva.',
+    story:'Al reconstruir el caso, el equipo detectó un patrón: había recompensas constantes, rutas llamativas y bastante movimiento en pantalla. Pero las misiones <strong>no ayudaban a comprender mejor</strong>, no estaban articuladas con metas claras y terminaban funcionando como adorno. Todo se veía gamificado, aunque en realidad el aprendizaje quedaba vacío.',
+    q:'Con las evidencias reunidas, ¿qué afirmación interpreta mejor el caso completo?',
+    options:[
+      'Gamificar es sumar estética y dinamismo, aunque el objetivo quede implícito.',
+      'Una experiencia gamificada funciona solo cuando el contenido desaparece detrás del juego.',
+      'Los elementos de juego deben estar al servicio del aprendizaje y no sustituirlo.',
+      'La herramienta digital siempre resuelve los vacíos pedagógicos.'
+    ],
+    correct:2,
+    code:'A',
+    hint:'Pista 4: el patrón final confirma que el culpable es quien convierte la gamificación en una capa externa de premios y apariencia, vaciando el propósito pedagógico.'
+  }
+];
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function toggleAudio(){
+  state.audio = !state.audio;
+  const btn = document.getElementById('audioBtn');
+  if(btn) btn.textContent = state.audio ? 'Ambiente activo' : 'Activar ambiente';
+}
+
+function startLoading(){
+  showScreen('screen-loading');
+  const items=[...document.querySelectorAll('#loadList li')];
+  const bar=document.getElementById('progressBar');
+  items.forEach(li=>li.classList.remove('done'));
+  bar.style.width='0%';
+  let i=0;
+  const timer=setInterval(()=>{
+    if(i<items.length){items[i].classList.add('done');bar.style.width=((i+1)/items.length*100)+'%';i++;}
+    else{clearInterval(timer);setTimeout(()=>showScreen('screen-builder'),350)}
+  },430);
+}
+
+function selectProfile(el){
+  document.querySelectorAll('#profileOptions .option').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+  state.profile=el.dataset.profile;
+  checkReady();
+}
+function selectGear(el){
+  document.querySelectorAll('#gearOptions .option').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+  state.gear=el.dataset.gear;
+  checkReady();
+}
+function checkReady(){
+  state.playerName=document.getElementById('playerName').value.trim();
+  document.getElementById('startCaseBtn').disabled=!(state.playerName && state.profile && state.gear);
+}
+function enterCase(){
+  showScreen('screen-case');
+  document.getElementById('agentName').textContent=state.playerName;
+  document.getElementById('agentProfile').textContent='Perfil: '+state.profile;
+  document.getElementById('agentGear').textContent='Equipo: '+state.gear;
+  renderLocks(); renderMission(); renderSuspects(); renderAccuse();
+}
+
+function renderLocks(){
+  const wrap=document.getElementById('locksWrap');
+  wrap.innerHTML='';
+  missions.forEach((m,idx)=>{
+    const div=document.createElement('div');
+    div.className='lock'+(state.solved[idx]?' done':'')+(idx===state.missionIndex?' current':'');
+    div.innerHTML=`<div><strong>${idx+1}. ${m.title.replace('Candado '+(idx+1)+' · ','')}</strong></div><div class="state">${state.solved[idx]?'Abierto':idx===state.missionIndex?'Activo':'Bloqueado'}</div>`;
+    wrap.appendChild(div);
+  });
+}
+
+function renderMission(){
+  if(state.missionIndex>=missions.length){
+    document.getElementById('missionTitle').textContent='Tablero final';
+    document.getElementById('missionSub').textContent='Todas las evidencias fueron analizadas.';
+    document.getElementById('storyText').innerHTML='Has abierto todos los candados. Ahora corresponde revisar las pistas reunidas, observar el archivo de sospechosos y emitir una única acusación.';
+    document.getElementById('questionText').textContent='Acusación disponible';
+    document.getElementById('answersWrap').innerHTML='';
+    document.getElementById('feedbackBox').className='feedback';
+    document.getElementById('continueBtn').classList.add('hidden');
+    document.getElementById('accuseBlock').classList.remove('hidden');
+    updatePistas(); renderLocks(); return;
+  }
+  document.getElementById('accuseBlock').classList.add('hidden');
+  const m=missions[state.missionIndex];
+  document.getElementById('missionTitle').textContent=m.title;
+  document.getElementById('missionSub').textContent=m.sub;
+  document.getElementById('storyText').innerHTML=m.story;
+  document.getElementById('questionText').textContent=m.q;
+  const aw=document.getElementById('answersWrap');
+  aw.innerHTML='';
+  m.options.forEach((opt,idx)=>{
+    const b=document.createElement('button');
+    b.className='answer';
+    b.textContent=opt;
+    b.onclick=()=>answerMission(idx,b);
+    aw.appendChild(b);
+  });
+  const fb=document.getElementById('feedbackBox');
+  fb.className='feedback';
+  fb.innerHTML='';
+  document.getElementById('continueBtn').classList.add('hidden');
+  renderLocks(); updatePistas();
+}
+
+function answerMission(index, btn){
+  const m=missions[state.missionIndex];
+  const buttons=[...document.querySelectorAll('.answer')];
+  buttons.forEach(b=>b.disabled=true);
+  const fb=document.getElementById('feedbackBox');
+  if(index===m.correct){
+    btn.classList.add('correct');
+    state.solved[state.missionIndex]=true;
+    state.code[state.missionIndex]=m.code;
+    fb.className='feedback show ok';
+    fb.innerHTML=`<div><span class="code-chip">${m.code}</span><strong>Candado abierto.</strong></div><div style="margin-top:10px">${m.hint}</div><div style="margin-top:10px;color:var(--glow2)">Añade esta pista a tu investigación y decide en el archivo de sospechosos quién ya puede quedar descartado.</div>`;
+    document.getElementById('continueBtn').classList.remove('hidden');
+    updatePistas(); renderLocks(); renderSuspects();
+  } else {
+    btn.classList.add('wrong');
+    buttons[m.correct].classList.add('correct');
+    fb.className='feedback show bad';
+    fb.innerHTML=`No exactamente. Revisa la relación entre los elementos de juego y el propósito pedagógico. La evidencia correcta queda marcada para que continúes con claridad.`;
+    state.solved[state.missionIndex]=true;
+    state.code[state.missionIndex]=m.code;
+    document.getElementById('continueBtn').classList.remove('hidden');
+    updatePistas(); renderLocks(); renderSuspects();
+  }
+}
+
+function goNextMission(){
+  state.missionIndex++;
+  renderMission();
+}
+
+function updatePistas(){
+  const count=state.code.filter(x=>x!=='_').length;
+  document.getElementById('pistasCount').textContent=count;
+  document.getElementById('codeDisplay').textContent=state.code.join(' ');
+}
+
+function openSuspects(){
+  renderSuspects();
+  document.getElementById('suspectsModal').classList.add('show');
+}
+function closeSuspects(){ document.getElementById('suspectsModal').classList.remove('show'); }
+
+function toggleSuspect(id){
+  state.suspectStatus[id]=!state.suspectStatus[id];
+  renderSuspects();
+}
+
+function renderSuspects(){
+  const grid=document.getElementById('susGrid');
+  grid.innerHTML='';
+  suspects.forEach(s=>{
+    const discarded=state.suspectStatus[s.id];
+    const el=document.createElement('div');
+    el.className='suspect'+(discarded?' discarded':'');
+    el.innerHTML=`
+      <div class="stamp">DESCARTADO</div>
+      <div class="sus-top"><h4 class="sus-name">${s.name}</h4><div class="sus-role">${s.role}</div></div>
+      <div class="sus-body"><p>${s.desc}</p><button class="btn ${discarded?'ghost':'secondary'}" onclick="toggleSuspect('${s.id}')">${discarded?'Reactivar sospecha':'Descartar sospechoso'}</button></div>`;
+    grid.appendChild(el);
+  });
+}
+
+function renderAccuse(){
+  const wrap=document.getElementById('accuseGrid');
+  wrap.innerHTML='';
+  suspects.forEach(s=>{
+    const b=document.createElement('button');
+    b.className='accuse-btn';
+    b.textContent=s.name;
+    b.onclick=()=>accuse(s.id);
+    wrap.appendChild(b);
+  });
+}
+
+function accuse(id){
+  const res=document.getElementById('finalResult');
+  const victory=document.getElementById('victoryBlock');
+  const victoryText=document.getElementById('victoryText');
+  if(id==='puntos'){
+    res.className='result show good';
+    res.innerHTML='<strong>Acusación confirmada.</strong> El principal responsable fue <strong>Señor Puntos Vacíos</strong>. La investigación demuestra que la experiencia usó recompensas visibles, pero no articuló el aprendizaje, el propósito ni la comprensión.';
+    victory.classList.remove('hidden');
+    victoryText.innerHTML='Resolviste el caso: la gamificación fracasa cuando se convierte en una capa externa de puntos, niveles e insignias sin sentido pedagógico. Los elementos de juego deben enriquecer el aprendizaje, no reemplazarlo.';
+  } else {
+    res.className='result show bad';
+    res.innerHTML='Tu acusación aún no convence del todo. Revisa las pistas reunidas: la evidencia insiste en recompensas visibles, metas poco claras y aprendizaje vacío. Vuelve al archivo y acusa de nuevo.';
+    victory.classList.add('hidden');
+  }
+}
+
+window.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSuspects(); });
+</script>
+</body>
+</html>
