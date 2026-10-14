@@ -39,6 +39,7 @@ async function shot(page, name) {
     await page.getByRole('button', { name: 'Comenzar la investigación' }).click();
     assert.equal(await page.evaluate(() => state.identity.mode), 'team');
     assert(await page.locator('[data-action="chapter"][data-index="1"]').isDisabled());
+    assert.equal(await page.locator('.visual-evidence img').count(), 0);
     await page.locator('#answer-0').click();
     await page.locator('#lock-code').fill('10');
     await page.getByRole('button', { name: 'Abrir informe' }).click();
@@ -52,11 +53,23 @@ async function shot(page, name) {
     await page.locator('#lock-code').fill('20');
     await page.getByRole('button', { name: 'Abrir informe' }).click();
     assert.equal(await page.evaluate(() => state.clues[0]), true);
+    assert((await page.locator('.visual-evidence img').getAttribute('src')).endsWith('pista-pelo.webp'));
+    await page.locator('[data-action="inspect-evidence"]').click();
+    assert.equal(await page.locator('#modal-title').textContent(), 'Fibras de pelo blanco');
+    await page.keyboard.press('Escape');
     await shot(page, '03-primer-informe');
     await page.locator('[data-action="tab"][data-tab="suspects"]').first().click();
     await page.locator('[data-action="discard"][data-id="violeta"]').click();
     await page.locator('#reason-violeta').fill('La evidencia describe pelo blanco.');
     await shot(page, '04-sospechosos-escritorio');
+    assert.equal(await page.locator('[data-action="inspect-suspect"]').count(), 6);
+    for (const [id, name] of [['golden','Sr. Golden'],['violeta','Sr. Violeta'],['green','Sr. Green'],['blue','Sra. Blue'],['red','Sra. Red'],['white','Sra. White']]) {
+      await page.locator(`[data-action="inspect-suspect"][data-id="${id}"]`).click();
+      assert.equal(await page.locator('#modal-title').textContent(), name);
+      assert.equal(await page.locator('.profile-attributes dd').count(), 5);
+      assert(await page.locator('.suspect-inspection .portrait img').isVisible());
+      await page.keyboard.press('Escape');
+    }
     await page.locator('[data-action="discard"][data-id="violeta"]').click();
     assert.equal(await page.evaluate(() => state.discarded.violeta), false);
     await page.locator('[data-action="tab"][data-tab="notes"]').first().click();
@@ -75,6 +88,12 @@ async function shot(page, name) {
       await page.locator('[data-action="advance"]').click();
     }
     assert.deepEqual(await page.evaluate(() => state.clues), [true, true, true, true]);
+    await page.locator('[data-action="tab"][data-tab="notes"]').first().click();
+    assert.equal(await page.locator('.visual-evidence img').count(), 4);
+    const clueSources = await page.locator('.visual-evidence img').evaluateAll(images => images.map(img => img.getAttribute('src')));
+    assert.equal(new Set(clueSources).size, 4);
+    await shot(page, '12-cuaderno-visual');
+    await page.locator('[data-action="tab"][data-tab="investigation"]').first().click();
     assert(await page.locator('.cabinet-door').first().isDisabled());
     await page.locator('#riddle-answer').fill('biblioteca');
     await page.getByRole('button', { name: 'Comprobar el escondite' }).click();
@@ -157,6 +176,11 @@ async function shot(page, name) {
     await mp.locator('[data-action="tab"][data-tab="suspects"]').first().click();
     await checkNoOverflow(mp, 'mobile suspects');
     await shot(mp, '10-sospechosos-movil');
+    await mp.locator('[data-action="inspect-suspect"][data-id="white"]').click();
+    await checkNoOverflow(mp, 'mobile enlarged profile');
+    assert.equal(await mp.locator('.profile-attributes dd').count(), 5);
+    await shot(mp, '11-ficha-ampliada-movil');
+    await mp.keyboard.press('Escape');
     await mp.setViewportSize({ width: 320, height: 740 });
     await checkNoOverflow(mp, '320px suspects');
     await mp.locator('[data-action="tab"][data-tab="investigation"]').first().click();
@@ -164,6 +188,10 @@ async function shot(page, name) {
     await mp.locator('#backup-input').setInputFiles(backupPath);
     await mp.locator('#confirm-import').click();
     await checkNoOverflow(mp, '320px resolution');
+    await mp.locator('[data-action="tab"][data-tab="notes"]').first().click();
+    assert.equal(await mp.locator('.visual-evidence img').count(), 4);
+    await checkNoOverflow(mp, '320px illustrated evidence');
+    await shot(mp, '13-evidencias-movil');
     assert.equal(errors.length, 0, JSON.stringify(errors));
     console.log('PASS: partida completa, errores sin desbloqueo, reintentos, notas, descartes reversibles, recarga, informante, cifrado, acusación, informe, copia/importación, teclado, sonido, vista ampliada, móvil 390/320px; cero errores JS.');
   } finally { await browser.close(); }

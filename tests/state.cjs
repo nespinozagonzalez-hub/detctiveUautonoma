@@ -39,6 +39,18 @@ submit('lock-form', { code: '10' });
 assert.equal(read('state.clues[0]'), false);
 submit('lock-form', { code: '20' });
 assert.equal(read('state.clues[0]'), true);
+assert(element('#main').innerHTML.includes('assets/pista-pelo.webp'));
+click('inspect-evidence', { index: '2' });
+assert(!element('#modal').open);
+click('inspect-evidence', { index: '0' });
+assert(element('#modal').open);
+assert(element('#modal-content').innerHTML.includes('pista-pelo.webp'));
+click('close-modal');
+for (const id of ['golden','violeta','green','blue','red','white']) {
+  click('inspect-suspect', { id });
+  assert.equal((element('#modal-content').innerHTML.match(/<dd>/g) || []).length, 5);
+  click('close-modal');
+}
 click('discard', { id: 'violeta' });
 assert.equal(read('state.discarded.violeta'), true);
 click('discard', { id: 'violeta' });
