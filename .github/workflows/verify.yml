@@ -1,0 +1,38 @@
+name: Verificar la experiencia Evans
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Lógica y restauración del expediente
+        run: |
+          node --check app.js
+          node tests/logic.cjs
+          node tests/state.cjs
+      - name: Preparar navegador de pruebas
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install --with-deps chromium
+      - name: Recorrer la partida y comprobar vistas
+        env:
+          TEST_OUTPUT: ${{ github.workspace }}/qa-results
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/evans-server.log 2>&1 &
+          node tests/flow.cjs
+      - name: Conservar capturas de verificación
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verificacion-evans
+          path: qa-results/
+          retention-days: 7
