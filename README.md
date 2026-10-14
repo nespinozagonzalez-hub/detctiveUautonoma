@@ -1,6 +1,6 @@
 # El caso Dorothy Evans
 
-Experiencia detectivesca formativa para trabajar conceptos de gamificación. Versión 2.1.0.
+Experiencia detectivesca formativa para trabajar conceptos de gamificación. Versión 2.1.1.
 
 ## Usar en clase
 
@@ -18,6 +18,7 @@ La modalidad de equipo comparte una partida en un dispositivo o pantalla. No uti
 - Notas y motivos de descarte conservados en el expediente.
 - Cuatro evidencias ilustradas, disponibles al desbloquear cada informe y ampliables desde el cuaderno.
 - Fichas de los seis sospechosos ampliables, con retrato y todos sus atributos.
+- Carga inmediata de los seis retratos para evitar miniaturas vacías en Safari/iOS al desplazar el fichero.
 - Sonido ambiental opcional, activado mediante una acción del participante.
 - Pantalla completa cuando la plataforma la admite y vista ampliada como alternativa, incluyendo móviles e iframes.
 - HTML, CSS y JavaScript estáticos; sin backend, registro de cuentas ni envío de respuestas.
