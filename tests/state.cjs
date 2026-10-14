@@ -59,6 +59,8 @@ assert.equal(read('state.chapter'), 5);
 assert.equal((element('#main').innerHTML.match(/class="alphabet-cell"/g) || []).length, 27);
 submit('cipher-form', { message: 'texto incorrecto' });
 assert.equal(read('state.cipherSolved'), false);
+assert.equal(read('state.cipherDraft'), 'texto incorrecto');
+assert(element('#main').innerHTML.includes('value="texto incorrecto"'));
 submit('cipher-form', { message: 'EN EL COMEDOR CON UNA LÁMPARA.' });
 assert.equal(read('state.cipherSolved'), true);
 click('advance');

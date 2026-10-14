@@ -1,6 +1,6 @@
 # El caso Dorothy Evans
 
-Experiencia detectivesca formativa para trabajar conceptos de gamificación. Versión 2.0.0.
+Experiencia detectivesca formativa para trabajar conceptos de gamificación. Versión 2.0.1.
 
 ## Usar en clase
 
